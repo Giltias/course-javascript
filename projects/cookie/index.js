@@ -45,8 +45,82 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-filterNameInput.addEventListener('input', function () {});
+const cookies = {};
+let filterValue = filterNameInput.value;
 
-addButton.addEventListener('click', () => {});
+function updateCookies() {
+  const cookiesString = document.cookie;
+  cookiesString.split(';').map((cookie) => {
+    const [name, value] = cookie.trim().split('=');
 
-listTable.addEventListener('click', (e) => {});
+    if (name) {
+      cookies[name] = value;
+    }
+  });
+}
+
+updateCookies();
+refreshTable();
+
+filterNameInput.addEventListener('input', function () {
+  filterValue = this.value;
+
+  refreshTable();
+});
+
+addButton.addEventListener('click', () => {
+  const name = encodeURIComponent(addNameInput.value.trim());
+  const value = encodeURIComponent(addValueInput.value.trim());
+
+  document.cookie = `${name}=${value}`;
+  cookies[name] = value;
+
+  refreshTable();
+});
+
+listTable.addEventListener('click', (e) => {
+  const el = e.target;
+  if (el.classList.contains('remove-cookie')) {
+    const name = el.dataset.cookieName;
+    document.cookie = `${name}=; max-age=0`;
+    delete cookies[name];
+
+    refreshTable();
+  }
+});
+
+function refreshTable() {
+  listTable.innerHTML = '';
+
+  for (const name of Object.keys(cookies)) {
+    const value = cookies[name];
+
+    if (
+      filterValue &&
+      !name.toLowerCase().includes(filterValue.toLowerCase()) &&
+      !value.toLowerCase().includes(filterValue.toLowerCase())
+    ) {
+      continue;
+    }
+
+    const tr = document.createElement('tr');
+    const nameCell = document.createElement('td');
+    const valueCell = document.createElement('td');
+    const actionCell = document.createElement('td');
+    const removeButton = document.createElement('button');
+
+    removeButton.classList.add('remove-cookie');
+    removeButton.dataset.cookieName = name;
+    removeButton.textContent = 'Удалить';
+
+    nameCell.textContent = name;
+    valueCell.textContent = value;
+    actionCell.append(removeButton);
+
+    tr.append(nameCell, valueCell, actionCell);
+
+    listTable.append(tr);
+  }
+}
+
+export { addButton, addNameInput, addValueInput, listTable };
