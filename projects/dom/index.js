@@ -188,7 +188,9 @@ function collectDOMStat(root) {
     }
   };
 
-  collectNodeStat(root);
+  for (const childNode of root.childNodes) {
+    collectNodeStat(childNode);
+  }
   return result;
 }
 
