@@ -1,5 +1,5 @@
-import http from 'http';
-import Storage from './storage';
+const http = require('http');
+const Storage = require('./storage');
 
 createServer();
 

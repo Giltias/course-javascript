@@ -1,7 +1,6 @@
 {
-  "port": 8181,
   "proxy": {
-    "/geo-review/list": {
+    "/geo-review/": {
       "target": "http://localhost:8181",
       "pathRewrite": {
         "^/geo-review": ""

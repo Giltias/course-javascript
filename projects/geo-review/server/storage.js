@@ -1,9 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-
+const fs = require('fs');
+const path = require('path');
 const dataPath = path.join(__dirname, 'data.json');
 
-export default class Storage {
+class Storage {
   constructor() {
     if (!fs.existsSync(dataPath)) {
       fs.writeFileSync(dataPath, '{}');
@@ -41,10 +40,10 @@ export default class Storage {
   getCoords() {
     const coords = [];
 
-    for (const item of this.data) {
+    for (const [key] of Object.entries(this.data)) {
       coords.push({
-        coords: item.split('_'),
-        total: this.data[item].length,
+        coords: key.split('_'),
+        total: this.data[key].length,
       });
     }
 
@@ -61,3 +60,5 @@ export default class Storage {
     fs.writeFileSync(dataPath, JSON.stringify(this.data), () => {});
   }
 }
+
+module.exports = Storage;
